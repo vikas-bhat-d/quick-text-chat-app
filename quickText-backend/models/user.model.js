@@ -13,13 +13,10 @@ const userSchema=new Schema({
     },
     nickname:{
         type:String,
-        required:true,
-        unique:true,
         trim:true,
         lowercase:true,
-        index:true
     },
-    emain:{
+    email:{
         type:String,
         required:true,
         unique:true,
@@ -62,7 +59,7 @@ userSchema.methods.generateAccessToken=async function() {
         {
             _id:this._id,
             username:this.username,
-            phoneNumber:this.phoneNumber
+            email:this.email
         },
         process.env.ACCESS_TOKEN_SECRET,
         {

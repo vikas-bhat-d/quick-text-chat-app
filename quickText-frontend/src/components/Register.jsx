@@ -1,7 +1,10 @@
 import React, { useCallback, useRef, useState } from 'react'
 import Cropper from 'react-easy-crop';
 import axios from 'axios';
-
+import { useNavigate } from 'react-router-dom';
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+import { server } from '../assets/variables';
 
 function Register() {
   const [imageSrc, setImageSrc] = useState("/user.png");
@@ -17,6 +20,8 @@ function Register() {
   const [password,setPassword]=useState("")
   const [confirmPassword,setConfirmPassword]=useState("")
 
+  const navigate=useNavigate();
+
   const handleFileChange = (e) => {
     const file = e.target.files[0];
     if (file) {
@@ -28,6 +33,17 @@ function Register() {
       };
       reader.readAsDataURL(file);
     }
+  }
+
+  const notifyMistakes=(message)=>{
+    toast.error(message, {
+      position: "top-right",
+      autoClose: 2000,
+      hideProgressBar: false, 
+      closeOnClick: true,
+      pauseOnHover: true,
+      draggable: true,
+    });
   }
 
   const onCropComplete = useCallback((_, croppedAreaPixels) => {
@@ -77,7 +93,10 @@ function Register() {
 
   const handleSubmit=async()=>{
     console.log("submitted")
-    if(password!==confirmPassword) return
+    if(password!==confirmPassword) {
+      notifyMistakes("passwords do not match")
+      return
+    }
     const data=new FormData()
     data.append('username',username);
     data.append('email',email);
@@ -85,12 +104,19 @@ function Register() {
       data.append('displayPicture',blobImg,'display-picture.jpeg');
     data.append('password',password)
 
+    try {
+      const response=await axios.post(`${server}/api/v1/user/register`,data);
+      console.log(response?.data);
+    } catch (error) {
+      console.log(error)
+    }
     for(let [key,value] of data.entries())
       console.log(`${key}:${value}`)
   }
 
   return (
     <div className='h-full w-full flex items-center justify-center'>
+      <ToastContainer />
       <div className={`w-96 bg-white rounded-lg shadow-lg p-8 flex items-center flex-col relative`}>
         {showCropper && (
           <div className='h-full w-full absolute z-10 top-0 backdrop-blur-md '>
@@ -127,6 +153,7 @@ function Register() {
 
         <button className='bg-button-purple text-white m-2 text-sm p-2 w-32 rounded-xl active:scale-90' onClick={e=>handleSubmit()}>Register</button>
 
+        <p className='text-text-grey'>already registered? <span className='text-black hover:cursor-pointer underline' onClick={()=>{navigate("/login")}}>Login</span></p>
 
       </div>
     </div>

@@ -19,6 +19,9 @@ app.get('/',(req,res)=>{
     res.send("listening");
 })
 
+import { userRouter } from "../routes/user.route.js"
+app.use("/api/v1/user",userRouter);
+
 app.get('/hello',(req,res)=>{
     const user=req.query.user;
     res.send(`<!DOCTYPE html>
