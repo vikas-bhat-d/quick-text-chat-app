@@ -1,1 +1,1 @@
-export const server="https://7393-117-248-85-132.ngrok-free.app"
+export const server = "http://localhost:3000";

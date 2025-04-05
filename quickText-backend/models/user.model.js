@@ -32,6 +32,7 @@ const userSchema=new Schema({
         //will be storing cloudinary link
         type:String
     },
+    profilePictureId:String,
     refreshToken:{
         type:String
     }

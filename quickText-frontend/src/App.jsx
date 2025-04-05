@@ -1,38 +1,75 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import NavBar from './components/NavBar'
-import Hero from './components/Hero'
-import Login from './components/Login'
-import Register from './components/Register'
-import { BrowserRouter, Routes, Route } from 'react-router-dom'
+import { useState } from "react";
+import { BrowserRouter, Routes, Route, useNavigate } from "react-router-dom";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+import { MessageProvider } from "./providers/Messages";
+
+import NavBar from "./components/NavBar";
+import Hero from "./components/Hero";
+import Login from "./pages/Login/Login";
+import Register from "./pages/Register/Register";
+import Chat from "./pages/Chat/Chat";
+import ChatLayout from "./layouts/ChatLayout";
+
+import { NotificationProvider } from "./providers/Notification";
+
+import { SocketProvider } from "./providers/Socket";
+import { UserProvider } from "./providers/User";
+import Profile from "./pages/Profile/Profile";
 
 function App() {
-  const [count, setCount] = useState(0)
+  const notifyMistakes = (message) => {
+    toast.error(message, {
+      position: "top-right",
+      autoClose: 2000,
+      hideProgressBar: false,
+      closeOnClick: true,
+      pauseOnHover: true,
+      draggable: true,
+    });
+  };
+
+  const notifySuccess = (message) => {
+    toast.success(message, {
+      position: "top-right",
+      autoClose: 2000,
+      hideProgressBar: false,
+      closeOnClick: true,
+      pauseOnHover: true,
+      draggable: true,
+    });
+  };
 
   return (
-    <BrowserRouter>
-        <div className=' w-screen h-screen bg-background-light px-32 pt-5  font-outfit flex items-center flex-col'>
+    <UserProvider>
+      <NotificationProvider>
+        <BrowserRouter>
+          <ToastContainer />
+          <div className="min-h-screen bg-base-200 font-outfit flex items-center flex-col overflow-hiddem pb-5">
+            <Routes>
+              <Route
+                path="/"
+                element={
+                  <div className="">
+                    <NavBar />
+                    <Hero />
+                  </div>
+                }
+              />
+              <Route path="/login" element={<Login />} />
+              <Route path="/register" element={<Register />} />
 
-      <Routes>
-        <Route path='/' element={
-          <>
-          <NavBar />
-          <Hero />
-          </>
-        }>
-        </Route>
-        <Route path='/login' element={<Login/>}>
-        </Route>
-        <Route path='/register' element={<Register/>}>
-
-        </Route>
-        
-      </Routes>
+              <Route element={<ChatLayout />}>
+                <Route path="/chat" element={<Chat />} />
+                <Route path="/profile/:id" element={<Profile />}></Route>
+              </Route>
+              <Route path="*" element={<h1>404 - Page Not Found</h1>} />
+            </Routes>
           </div>
-    </BrowserRouter>
-
-  )
+        </BrowserRouter>
+      </NotificationProvider>
+    </UserProvider>
+  );
 }
 
-export default App
+export default App;
