@@ -12,7 +12,7 @@ import { response } from "express";
 const cookieOptions = {
   httpOnly: true,
   secure: true,
-  sameSite: "None",
+  SameSite: "None",
 };
 
 const generateTokens = async function (userId) {
