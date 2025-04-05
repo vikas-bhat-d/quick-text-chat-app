@@ -12,7 +12,7 @@ import { response } from "express";
 const cookieOptions = {
   httpOnly: true,
   secure: true,
-  SameSite: "None",
+  sameSite: "None",
 };
 
 const generateTokens = async function (userId) {
@@ -152,8 +152,8 @@ const logoutUser = asyncHandler(async (req, res, next) => {
   );
 
   return res
-    .clearCookie("accessToken")
-    .clearCookie("refreshToken")
+    .clearCookie("accessToken",cookieOptions)
+    .clearCookie("refreshToken",cookieOptions)
     .status(200)
     .json(new apiResponse(200, {}, "User logged out succesfully"));
 });
