@@ -17,7 +17,9 @@ export const MessageProvider = (props) => {
 
   socket.off("message").on("message", (msg) => {
     console.log("recieved new message: ", msg);
+    console.log("messages:", messages[msg.sender]);
     if (!messages[msg.sender]) {
+      console.log("test");
       setMessages((prev) => ({
         ...prev,
         [msg.sender]: [],
