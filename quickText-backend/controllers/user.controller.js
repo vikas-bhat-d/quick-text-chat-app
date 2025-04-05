@@ -163,8 +163,8 @@ const editProfile = asyncHandler(async (req, res, next) => {
   const newProfile = req?.file ? req.file.path : "";
   const user = req.user;
 
-  const response = await cloudinaryRemove(user.profilePictureId);
-  console.log(response);
+  if(user.profilePictureId)
+    const response = await cloudinaryRemove(user.profilePictureId);
   let cloudinaryResponse = null;
 
   if (req.file && newProfile.trim() != "") {
