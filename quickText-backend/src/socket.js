@@ -62,7 +62,8 @@ export const initSocket = (server) => {
     socket.on("new-message", (msg) => {
       console.log("new message recieved", msg);
       const recieverId = getSocketForUser(msg.reciever.toString());
-      if (recieverId) io.to(recieverId).emit("message", msg);
+      console.log(msg.reciever.toString(), recieverId);
+      if (recieverId.length > 0) io.to(recieverId).emit("message", msg);
     });
 
     socket.on("disconnect", (reason) => {
