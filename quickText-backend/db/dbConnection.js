@@ -11,7 +11,7 @@ const connectDB = async () => {
       connectionInstance.connection.port
     );
   } catch (err) {
-    console.log("MongoDB connection error: ", err);
+    console.log("MongoDB connection errors: ", err);
   }
 };
 

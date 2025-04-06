@@ -152,8 +152,8 @@ const logoutUser = asyncHandler(async (req, res, next) => {
   );
 
   return res
-    .clearCookie("accessToken")
-    .clearCookie("refreshToken")
+    .clearCookie("accessToken",cookieOptions)
+    .clearCookie("refreshToken",cookieOptions)
     .status(200)
     .json(new apiResponse(200, {}, "User logged out succesfully"));
 });
@@ -163,8 +163,9 @@ const editProfile = asyncHandler(async (req, res, next) => {
   const newProfile = req?.file ? req.file.path : "";
   const user = req.user;
 
-  const response = await cloudinaryRemove(user.profilePictureId);
-  console.log(response);
+  if(user.profilePictureId){
+    const response = await cloudinaryRemove(user.profilePictureId);
+  }
   let cloudinaryResponse = null;
 
   if (req.file && newProfile.trim() != "") {

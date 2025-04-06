@@ -62,7 +62,7 @@ export const initSocket = (server) => {
     socket.on("new-message", (msg) => {
       console.log("new message recieved", msg);
       const recieverId = getSocketForUser(msg.reciever.toString());
-      console.log(recieverId);
+      console.log(msg.reciever.toString(), recieverId);
       if (recieverId.length > 0) io.to(recieverId).emit("message", msg);
     });
 
