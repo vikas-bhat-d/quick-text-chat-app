@@ -6,6 +6,8 @@ import { useNotification } from "../../providers/Notification";
 import { useUser } from "../../providers/User";
 import { Eye, EyeOff } from "lucide-react";
 import NavBar from "../../components/NavBar";
+import { axiosInstance } from "../../utils/axios";
+import { TailSpin } from "react-loader-spinner";
 
 function Login() {
   const [username, setUsername] = useState("");
@@ -13,20 +15,22 @@ function Login() {
 
   const [password, setPassword] = useState("");
   const navigate = useNavigate();
+  const [loading, setLoading] = useState(false);
+
   const { user, setUser } = useUser();
 
   const { notifyMistakes, notifySuccess } = useNotification();
 
   const handleSubmit = async () => {
+    if (loading) return;
     let response = null;
     console.log("submitted");
 
     const data = { username, password };
+    setLoading(true);
 
     try {
-      response = await axios.post(`${server}/api/v1/user/login`, data, {
-        withCredentials: true,
-      });
+      response = await axiosInstance.post("/user/login", data);
       console.log(response?.data);
       localStorage.setItem("accessToken", response?.data?.data?.accessToken);
       localStorage.setItem("refreshToken", response?.data?.data?.refreshToken);
@@ -40,6 +44,8 @@ function Login() {
     } catch (error) {
       notifyMistakes(error?.response?.data?.message);
       console.log(error);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -130,7 +136,18 @@ function Login() {
             className="btn btn-primary btn-outline m-5"
             onClick={(e) => handleSubmit()}
           >
-            Login
+            {loading ? (
+              <TailSpin
+                visible={true}
+                height="20"
+                width="20"
+                color="#4fa94d"
+                ariaLabel="tail-spin-loading"
+                radius="1"
+              />
+            ) : (
+              <>Login</>
+            )}
           </button>
 
           <p className="text-text-grey">

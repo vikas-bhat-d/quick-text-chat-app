@@ -6,6 +6,8 @@ import { server } from "../../assets/variables";
 import { useNotification } from "../../providers/Notification";
 import { Eye, EyeOff } from "lucide-react";
 import NavBar from "../../components/NavBar";
+import { axiosInstance } from "../../utils/axios";
+import { TailSpin } from "react-loader-spinner";
 
 function Register() {
   const [imageSrc, setImageSrc] = useState("/user.png");
@@ -21,6 +23,8 @@ function Register() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
+
+  const [loading, setLoading] = useState(false);
 
   const { notifyMistakes, notifySuccess } = useNotification();
 
@@ -85,6 +89,8 @@ function Register() {
   };
 
   const handleSubmit = async () => {
+    if (loading) return;
+    setLoading(true);
     let response = null;
     console.log("submitted");
 
@@ -101,7 +107,7 @@ function Register() {
     data.append("password", password);
 
     try {
-      response = await axios.post(`${server}/api/v1/user/register`, data);
+      response = await axiosInstance.post("/user/register", data);
       console.log(response?.data);
       console.log("status:", response.status);
       if (response?.status == 200) {
@@ -112,6 +118,8 @@ function Register() {
       console.log(response?.status);
       notifyMistakes(error?.response?.data?.message);
       console.log(error);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -315,7 +323,18 @@ function Register() {
           className="btn btn-primary mb-5"
           onClick={(e) => handleSubmit()}
         >
-          Register
+          {loading ? (
+            <TailSpin
+              visible={true}
+              height="20"
+              width="20"
+              color="#4fa94d"
+              ariaLabel="tail-spin-loading"
+              radius="1"
+            />
+          ) : (
+            <>Register</>
+          )}
         </button>
 
         <p className="text-text-grey">
